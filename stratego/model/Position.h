@@ -63,6 +63,24 @@ public:
 
 
 };
+Position::Position(int x,int y):
+    x_{x},
+    y_{y}
+{
+}
+int Position::getX(){
+    return this->x_;
+}
+int Position::getY(){
+    return this->y_;
+}
+void Position::setX(int x){
+   this->x_=x;
+}
+void Position::setY(int y){
+    this->y_=y;
+}
+
 
 }
 #endif // POSITION_H

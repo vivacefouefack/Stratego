@@ -19,6 +19,17 @@ private:
      * list of all pieces of a player
      */
     std::vector<Piece> pieces_;
+    /*!
+     * \brief lost pieces of player
+     * list of lost pieces of a player
+     */
+    std::vector<Piece> lostPieces_;
+
+    bool isMyTurn=false;
+
+    string color="";
+
+
 
 
 public:
@@ -43,7 +54,10 @@ public:
         *
         * \return list of pieces
         */
-    inline std::vector <Piece> getPieces();
+    inline std::vector <Piece> & getPieces();
+
+
+    inline void addLostPiece(Piece piece);
 
     /*!
         * \brief remove the piece
@@ -63,6 +77,86 @@ public:
     inline bool isMyPiece(Position position);
 
 
+    inline std::vector<Piece> & getLostPiece();
+
+    inline Piece & getPieceAt(Position position);
+
+    inline void emptyLastOccupation(Piece piece);
+
+    inline void setMyTurn(bool tour);
+    inline bool getIsMyTurn();
+    inline void setColor(string color);
+    inline string getColor();
+    inline void hideAllPiece();
+
+
+
 };
+Player::Player(std::vector<Piece> pieces):
+    pieces_{pieces}
+{
+
+}
+vector<Piece> & Player::getPieces(){
+    return this->pieces_;
+}
+void Player::addLostPiece(Piece piece){
+    this->lostPieces_.push_back(piece);
+}
+void Player::removePiece(Position position){
+    for(unsigned u=0;u<this->pieces_.size();u++){
+        if(this->pieces_.at(u).getPosition().getX()==position.getX()
+           && this->pieces_.at(u).getPosition().getY()==position.getY() ){
+            this->addLostPiece(this->pieces_.at(u));
+             this->pieces_.erase(this->pieces_.begin()+u);
+        }
+    }
+}
+bool Player::isMyPiece(Position position){
+    for(unsigned u=0;u<this->pieces_.size();u++){
+        if(this->pieces_.at(u).getPosition().getX()==position.getX()
+           && this->pieces_.at(u).getPosition().getY()==position.getY() ){
+            return true;
+        }
+    }
+    return  false;
+}
+vector<Piece> & Player::getLostPiece(){
+    return this->lostPieces_;
+}
+Piece & Player::getPieceAt(Position position){
+    unsigned index=0;//???????????????
+    for(unsigned u=0;u<this->pieces_.size();u++){
+            if(this->pieces_.at(u).getPosition().getX()==position.getX()
+               && this->pieces_.at(u).getPosition().getY()==position.getY() ){
+                index=u;
+            }
+        }
+    return this->pieces_.at(index);
+
+}
+void Player::emptyLastOccupation(Piece piece){
+    for(unsigned u=0;u<this->pieces_.size();u++){
+            if(this->pieces_.at(u).getPosition().getX()!=piece.getPosition().getX()
+               || this->pieces_.at(u).getPosition().getY()!=piece.getPosition().getY() ){
+                this->pieces_.at(u).emptyLastOccup();
+        }
+    }
+}
+void Player::setMyTurn(bool tour){
+    this->isMyTurn=tour;
+}
+bool Player::getIsMyTurn(){
+    return this->isMyTurn;
+}
+void Player::setColor(string color){
+    this->color=color;
+}
+string Player::getColor(){
+    return this->color;
+}
+
+
+
 }
 #endif // PLAYER_H
