@@ -76,6 +76,7 @@ public:
     inline void setRevealed();
     inline void addLastOccupation(Position position);
     inline void emptyLastOccup();
+    inline int symboleToInt();
 
 };
 Piece::Piece(Position position,string symbole):
@@ -124,6 +125,9 @@ bool Piece::roundTripCheck(Position nextPosition)
 void Piece::emptyLastOccup(){
     this->lastOccupation.clear();
 }
+//int Piece::symboleToInt(){
+ //   return (int)this->symbole_-48;
+//}
 }
 
 #endif // PIECE_H

@@ -11,4 +11,5 @@ HEADERS += \
     Game.h \
     Piece.h \
     Player.h \
-    Position.h
+    Position.h \
+    Symbole.h
