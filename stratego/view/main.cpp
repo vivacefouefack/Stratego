@@ -20,7 +20,7 @@ int main()
     Player playerTwo(piecesTwo);
     Game game(playerOne,playerTwo);
     game.getPlayerOne().setMyTurn(true);
-    game.getPlayerOne().setMyTurn(true);
+    game.getPlayerTwo().setMyTurn(true);
     view.displayBoard(game);
 
 }

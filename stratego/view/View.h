@@ -62,9 +62,9 @@ void View::displayWinner(Game game){
 }
 void View::displayBoard(Game & game){
    vector <char> colonne{'A','B','C','D','E','F','G','H','I','J'};
-    cout<<"    "<<colonne.at(0)<<" ";
+    cout<<"     "<<colonne.at(0)<<" ";
     for(unsigned u=1;u<colonne.size();u++){
-        cout<<" "<<colonne.at(u)<<" ";
+        cout<<"  "<<colonne.at(u)<<" ";
     }
     cout<<endl;
     for(int i=0;i<10;i++){
@@ -74,25 +74,33 @@ void View::displayBoard(Game & game){
           for(int j=0;j<10;j++){
                 if(game.getPlayerOne().isMyPiece(Position(i,j))){
                     if(game.getPlayerOne().getIsMyTurn() || game.getPlayerOne().getPieceAt(Position(i,j)).getRevealed()){
-                        cout<<" "<<game.getPlayerOne().getPieceAt(Position(i,j)).to_string()<<" ";
+                        if(game.getPlayerOne().getPieceAt(Position(i,j)).to_string()=="10"){
+                            cout<<" "<<game.getPlayerOne().getPieceAt(Position(i,j)).to_string()<<"  ";
+                        }else{
+                        cout<<"  "<<game.getPlayerOne().getPieceAt(Position(i,j)).to_string()<<"  ";
+                        }
                     }else{
 
-                            cout<<" "<<game.getPlayerOne().getPieceAt(Position(i,j)).to_stringHidden()<<" ";
+                            cout<<"  "<<game.getPlayerOne().getPieceAt(Position(i,j)).to_stringHidden()<<" ";
 
                     }
                 }
                 else if(game.getPlayerTwo().isMyPiece(Position(i,j))){
                     if(game.getPlayerTwo().getIsMyTurn() || game.getPlayerTwo().getPieceAt(Position(i,j)).getRevealed()){
-                        cout<<" "<<game.getPlayerTwo().getPieceAt(Position(i,j)).to_string()<<" ";
+                        if(game.getPlayerTwo().getPieceAt(Position(i,j)).to_string()=="10"){
+                            cout<<" "<<game.getPlayerTwo().getPieceAt(Position(i,j)).to_string()<<"  ";
+                        }else{
+                        cout<<"  "<<game.getPlayerTwo().getPieceAt(Position(i,j)).to_string()<<"  ";
+                        }
                     }else{
 
-                            cout<<" "<<game.getPlayerTwo().getPieceAt(Position(i,j)).to_stringHidden()<<" ";
+                            cout<<"  "<<game.getPlayerTwo().getPieceAt(Position(i,j)).to_stringHidden()<<" ";
 
                     }
                 }else if(game.inWater(Position(i,j))){
-                    cout<<" # ";
+                    cout<<"  #  ";
                 }else {
-                    cout<<" . ";
+                    cout<<"  .  ";
                 }
         }
         cout<<""<<endl;
