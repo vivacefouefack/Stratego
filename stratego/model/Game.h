@@ -109,6 +109,12 @@ public:
      */
     inline bool canStillMove(Player player);
 
+    /**
+     * @brief surrounded,this method checks if a piece is in a situation where it can no longer move
+     * @param piece ,the piece to check
+     * @return true if the piece is surrounded , false if not
+     */
+    inline bool surrounded(Player player, Piece piece);
 
 };
 Game::Game(Player  player1,Player  player2):
@@ -183,10 +189,6 @@ Player Game::getWinner(){
         return playerTwo;
     }
 
-    if(playerOne.getPieces().size()<playerTwo.getPieces().size() ){
-        return playerTwo;
-    }
-
 
     return playerOne;
 }
@@ -196,6 +198,10 @@ inline bool Game::isGoodMove(Position currentPosition,Position nextPosition){
     }else if(nextPosition.getY()-currentPosition.getY()>1 || nextPosition.getY()-currentPosition.getY()<-1){
         return false;
     }else if(nextPosition.getY()!=currentPosition.getY() && nextPosition.getX()!=currentPosition.getX()){
+        return false;
+    }else if(currentPosition.getX()<0 || currentPosition.getX()>9 || currentPosition.getY()<0 || currentPosition.getY()>9){
+        return false;
+    }else if(nextPosition.getX()<0 || nextPosition.getX()>9 || nextPosition.getY()<0 || nextPosition.getY()>9){
         return false;
     }
     return true;
@@ -326,10 +332,45 @@ Player & Game::getPlayerTwo(){
 bool Game::canStillMove(Player player){
     for(unsigned u=0;u<player.getPieces().size();u++){
         if(player.getPieces().at(u).to_string()!="D" && playerOne.getPieces().at(u).to_string()!="B"){
-            return true;
+            if(!surrounded(player,player.getPieces().at(u))){
+                return true;
+            }
         }
     }
+
     return false;
+}
+
+bool Game::surrounded(Player player,Piece piece){
+    if(isGoodMove(piece.getPosition(),Position(piece.getPosition().getX()+1,piece.getPosition().getY()))){
+        if(!player.isMyPiece(Position(piece.getPosition().getX()+1,piece.getPosition().getY()))){
+            if(!inWater(Position(piece.getPosition().getX()+1,piece.getPosition().getY()))){
+                return false;
+            }
+        }
+    }
+    if(isGoodMove(piece.getPosition(),Position(piece.getPosition().getX()-1,piece.getPosition().getY()))){
+        if(!player.isMyPiece(Position(piece.getPosition().getX()-1,piece.getPosition().getY()))){
+            if(!inWater(Position(piece.getPosition().getX()-1,piece.getPosition().getY()))){
+                   return false;
+            }
+        }
+    }
+    if(isGoodMove(piece.getPosition(),Position(piece.getPosition().getX(),piece.getPosition().getY()+1))){
+        if(!player.isMyPiece(Position(piece.getPosition().getX(),piece.getPosition().getY()+1))){
+            if(!inWater(Position(piece.getPosition().getX(),piece.getPosition().getY()+1))){
+                return false;
+            }
+        }
+    }
+    if(isGoodMove(piece.getPosition(),Position(piece.getPosition().getX(),piece.getPosition().getY()-1))){
+        if(!player.isMyPiece(Position(piece.getPosition().getX(),piece.getPosition().getY()-1))){
+            if(!inWater(Position(piece.getPosition().getX(),piece.getPosition().getY()-1))){
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 

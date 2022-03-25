@@ -100,11 +100,7 @@ compiler_clean:
 
 ####### Compile
 
-debug/main.o: ../../stratego/view/main.cpp ../../stratego/model/Piece.h \
-		../../stratego/model/Position.h \
-		../../stratego/model/Player.h \
-		../../stratego/model/Game.h \
-		../../stratego/view/view.h
+debug/main.o: ../../stratego/view/main.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\..\stratego\view\main.cpp
 
 ####### Install

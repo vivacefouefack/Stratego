@@ -121,7 +121,12 @@ public:
      */
     inline void whoIsPlaying(Player player);
 
-
+    /**
+     * @brief checkFile ,this method checks if the file containing the player's pieces respects the requested specificities
+     * @param url,the file path
+     * @return true if it respect and false if not.
+     */
+    inline bool checkFile(string url);
 
 
 
@@ -322,20 +327,20 @@ vector<Piece> View::bluePiecePositioning(){
             cout<<"Entrez le Symbole à la Position ("<<i<<", "<<j<<"):";
             cin>>symbole;
             while(!symbolContaint(symbole)){
-                if(!symbolContaint(symbole)){
+
                     cout<<"Entrez un symbole valide !!"<<endl;
                     cout<<"Entrez le Symbole à la Position ("<<i<<", "<<j<<"):";
                     cin>>symbole;
-                }else if(symbols[symbole]<=0){
+                  }
+                 if(symbols[symbole]<=0){
                      cout<<"le maximum de "<<symbole<<" sur le plateau été atteint !!"<<endl;
-                     cout<<"Entrez le Symbole à la Position ("<<i<<", "<<j<<"):";
-                     cin>>symbole;
-                }
-            }
+                     j--;
+                }else{
 
-            Piece piece(Position(i,j),symbole);
-            pieces.push_back(piece);
-            symbols[symbole]=symbols[symbole]-1;
+                     Piece piece(Position(i,j),symbole);
+                     pieces.push_back(piece);
+                     symbols[symbole]=symbols[symbole]-1;
+                 }
 
         }
     }
@@ -359,19 +364,21 @@ vector<Piece> View::redPiecePositioning(){
             cout<<"Entrez le Symbole à la Position ("<<i<<", "<<j<<"):";
             cin>>symbole;
             while(!symbolContaint(symbole)){
-                if(!symbolContaint(symbole)){
+
                     cout<<"Entrez un symbole valide !!"<<endl;
                     cout<<"Entrez le Symbole à la Position ("<<i<<", "<<j<<"):";
                     cin>>symbole;
-                }else if(symbols[symbole]<=0){
+                  }
+                 if(symbols[symbole]<=0){
                      cout<<"le maximum de "<<symbole<<" sur le plateau été atteint !!"<<endl;
-                     cout<<"Entrez le Symbole à la Position ("<<i<<", "<<j<<"):";
-                     cin>>symbole;
-                }
-            }
-            Piece piece(Position(i,j),symbole);
-            pieces.push_back(piece);
-            symbols[symbole]=symbols[symbole]-1;
+                     j--;
+                }else{
+
+                     Piece piece(Position(i,j),symbole);
+                     pieces.push_back(piece);
+                     symbols[symbole]=symbols[symbole]-1;
+                 }
+
 
         }
     }
@@ -381,8 +388,13 @@ vector<Piece> View::redPiecePositioning(){
 vector<Piece> View::blueFilePositioning(){
 
     string chemin;
-    cout<<"Entrer le chemin du fihier texte à lire pour positionner les pieces (ex: '../position.txt'"<<endl;
+    cout<<"Joueur bleu entrez le chemin du fihier texte à lire pour positionner les pieces (ex: '../positions.txt'"<<endl;
     cin>>chemin;
+    while(!checkFile(chemin)){
+        cout<<"La structure du fichier donné ne respecte pas les specificité du jeu"<<endl;
+        cout<<"Joueur bleu entrez le chemin du fihier texte à lire pour positionner les pieces (ex: '../positions.txt'"<<endl;
+        cin>>chemin;
+    }
     ifstream fichier(chemin, ios::in);  // on ouvre en lecture
     string line;
     vector<Piece> pieces;
@@ -411,8 +423,13 @@ vector<Piece> View::blueFilePositioning(){
 }
 vector<Piece> View::redFilePositioning(){
     string chemin;
-    cout<<"Entrer le chemin du fihier texte à lire pour positionner les pieces (ex: '../position.txt'"<<endl;
+    cout<<" Joueur Rouge entrez le chemin du fihier texte à lire  (ex: 'positions.txt' si dans le dossier courant "<<endl;
     cin>>chemin;
+    while(!checkFile(chemin)){
+        cout<<"La structure du fichier donné ne respecte pas les specificité du jeu"<<endl;
+        cout<<"Joueur bleu entrez le chemin du fihier texte à lire (ex: 'positions.txt' si dans le dossier courant "<<endl;
+        cin>>chemin;
+    }
     ifstream fichier(chemin, ios::in);
     string line;
     vector<Piece> pieces;
@@ -454,6 +471,47 @@ int View::askPositioningStyle(){
 
 void View::whoIsPlaying(Player player){
     cout<<"Au tour du Joueur "<<player.getColor()<<endl;
+}
+
+bool View::checkFile(string url){
+
+    map<string,int> symbols=this->symboleList();
+    ifstream fichier(url, ios::in);
+    string line;
+    vector<Piece> pieces;
+    int i=9;
+    while (getline(fichier, line)){
+            int start = 0;
+            string delimiter = " ";
+            int end = line.find(delimiter);
+
+            int j=0;
+            while (end != -1) {
+                    if(!symbolContaint(line.substr(start, end - start))){
+                        return false;
+                    }
+                    symbols[line.substr(start, end - start)]=symbols[line.substr(start, end - start)]-1;
+                    Piece piece(Position(i,j),line.substr(start, end - start));
+                    pieces.push_back(piece);
+                    start = end + delimiter.size();
+                    end = line.find(delimiter, start);
+                    j++;
+                }
+            Piece piece(Position(i,j),line.substr(start, end - start));
+            pieces.push_back(piece);
+
+            i--;
+        }
+    if(pieces.size()>40 || pieces.size()<40){
+        return false;
+    }
+    map<string, int>::iterator it;
+       for(it=symbols.begin(); it!=symbols.end(); ++it){
+           if( it->second<0) {
+               return false;
+           }
+       }
+    return true;
 }
 
 }
