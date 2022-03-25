@@ -27,36 +27,32 @@ public:
         * \brief constructor
         * constructor of one position
         *
-        * \param x abscissa
-        * \param y ordered
+        * \param x , the line
+        * \param y ,the column
         */
     inline Position(int x ,int y);
 
     /*!
-     * \brief abscissa position getter
-     * getter for position of a ball
-     *
-     * \return abscissa position of ball
+     * \brief line getter
+     * \return the line
      */
     inline int getX();
 
     /*!
-     * \brief ordered position getter
-     * getter for ordered position of a ball
-     *
-     * \return orderer position of ball
+     * \brief column getter
+     * \return the column
      */
     inline int getY();
     /*!
-     * \brief update x
-     * update the value of x
-     *\param the new value of y
+     * \brief update line
+     * update the value of line
+     *\param the new value of line
      */
     inline void setX( int x);
     /*!
-     * \brief update y
-     * update the value of y
-     *\param the new value of y
+     * \brief update column
+     * update the value of column
+     *\param the new value of column
      */
     inline void setY( int y);
 

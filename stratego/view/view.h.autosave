@@ -405,7 +405,7 @@ vector<Piece> View::blueFilePositioning(){
             pieces.push_back(piece);
 
             i++;
-        }
+        }   
     return pieces;
 
 }

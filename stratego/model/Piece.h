@@ -26,7 +26,7 @@ private:
      */
     bool revealed_=false;
     /*!
-     * \brief last occupied positions of the piece
+     * \brief this vector will make it possible to record the movement history of the piece
      *
      */
     vector<Position> lastOccupation ;
@@ -45,6 +45,7 @@ public:
         *  \param pieces,  pieces of player
         */
     inline explicit Piece(Position position,string symbole);
+
     /*!
         * \brief move the piece
         * moves the piece to the next position given as a parameter
@@ -52,18 +53,26 @@ public:
         *  \param the next position of the piece
         */
     inline  void move(Position nextPosition);
+
     /*!
         * \brief checks with lastOccupation if the piece
         * has made more than three round trips
         *  \return  true if yes and false if not
         */
     inline  bool roundTripCheck(Position nextPosition);
+
+    /**
+     * @brief getPosition, simple getter of position of the piece
+     * @return position of the piece
+     */
+    inline Position & getPosition();
+
     /*!
         * \brief piece in string .
         * a piece will be represented on the board by its symbol
         *\return  the string value
         */
-    inline Position & getPosition();
+
     string to_string();
     /*!
         * \brief when a player plays the opponent pieces will be represented by this string
@@ -71,12 +80,28 @@ public:
         */
     string to_stringHidden();
 
+    /**
+     * @brief getRevealed, simple getter of revealed
+     * @return revealed
+     */
     inline bool getRevealed();
 
+    /**
+     * @brief setRevealed,modify the revealed status of a piece
+     */
     inline void setRevealed();
+
+    /**
+     * @brief addLastOccupation,adds a position in the movement history of the piece
+     * @param position,the position to add
+     */
     inline void addLastOccupation(Position position);
+
+    /**
+     * @brief emptyLastOccup,this method empties the movement history of the piece.
+     */
     inline void emptyLastOccup();
-    inline int symboleToInt();
+
 
 };
 Piece::Piece(Position position,string symbole):
@@ -125,9 +150,7 @@ bool Piece::roundTripCheck(Position nextPosition)
 void Piece::emptyLastOccup(){
     this->lastOccupation.clear();
 }
-//int Piece::symboleToInt(){
- //   return (int)this->symbole_-48;
-//}
+
 }
 
 #endif // PIECE_H

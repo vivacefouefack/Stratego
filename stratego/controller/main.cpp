@@ -1,9 +1,11 @@
 #include <iostream>
+#include "Controller.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    Controller controller;
+    controller.start();
     return 0;
 }

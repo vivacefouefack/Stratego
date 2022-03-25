@@ -4,6 +4,7 @@
 #include <vector>
 #include "Position.h"
 #include <string>
+
 namespace std
 {
 /*!
@@ -25,9 +26,15 @@ private:
      */
     std::vector<Piece> lostPieces_;
 
+    /**
+     * @brief isMyTurn, a boolean which will allow to give the hand to a player
+     */
     bool isMyTurn=false;
 
-    string color="";
+    /**
+     * @brief color_,represents the color of a player
+     */
+    string color_;
 
 
 
@@ -46,7 +53,7 @@ public:
         *
         *  \param pieces,  pieces of player
         */
-    inline explicit Player(std::vector <Piece> pieces);
+    inline explicit Player(std::vector <Piece> pieces,string color);
 
     /*!
         * \brief pieces getter
@@ -56,7 +63,10 @@ public:
         */
     inline std::vector <Piece> & getPieces();
 
-
+    /**
+     * @brief addLostPiece,the method adds a piece among the lost pieces
+     * @param piece, the lost piece
+     */
     inline void addLostPiece(Piece piece);
 
     /*!
@@ -76,24 +86,51 @@ public:
         */
     inline bool isMyPiece(Position position);
 
-
+    /**
+     * @brief getLostPiece,gives all the lost pieces.
+     * @return return lost pieces
+     */
     inline std::vector<Piece> & getLostPiece();
 
+    /**
+     * @brief getPieceAt,this method makes it possible to obtain the piece which is at a position
+     * @param position,the position where the piece you are looking for is located
+     * @return , the piece at the position
+     */
     inline Piece & getPieceAt(Position position);
 
+    /**
+     * @brief emptyLastOccupation, this method empties all the history of movements
+     * of each of its pieces except the piece enters in parameter
+     * @param piece,the room whose movement history will not be deleted.
+     */
     inline void emptyLastOccupation(Piece piece);
 
+    /**
+     * @brief setMyTurn,this method allows us to give or remove the hand to the player
+     * @param tour, true to give hand to the player, false to remove hand to the player
+     */
     inline void setMyTurn(bool tour);
+
+    /**
+     * @brief getIsMyTurn, simple getter of isMyTurn.
+     * @return isMyTurn
+     */
     inline bool getIsMyTurn();
-    inline void setColor(string color);
+
+    /**
+     * @brief getColor, simple getter of the player color
+     * @return the player color
+     */
     inline string getColor();
-    inline void hideAllPiece();
+
 
 
 
 };
-Player::Player(std::vector<Piece> pieces):
-    pieces_{pieces}
+Player::Player(std::vector<Piece> pieces,string color):
+    pieces_{pieces},
+    color_{color}
 {
 
 }
@@ -125,7 +162,7 @@ vector<Piece> & Player::getLostPiece(){
     return this->lostPieces_;
 }
 Piece & Player::getPieceAt(Position position){
-    unsigned index=0;//???????????????
+    unsigned index=0;
     for(unsigned u=0;u<this->pieces_.size();u++){
             if(this->pieces_.at(u).getPosition().getX()==position.getX()
                && this->pieces_.at(u).getPosition().getY()==position.getY() ){
@@ -145,15 +182,13 @@ void Player::emptyLastOccupation(Piece piece){
 }
 void Player::setMyTurn(bool tour){
     this->isMyTurn=tour;
+
 }
 bool Player::getIsMyTurn(){
     return this->isMyTurn;
 }
-void Player::setColor(string color){
-    this->color=color;
-}
 string Player::getColor(){
-    return this->color;
+    return this->color_;
 }
 
 

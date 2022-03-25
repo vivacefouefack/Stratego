@@ -39,7 +39,7 @@ public:
     inline explicit Game(Player  player1,Player  player2);
 
     /*!
-      * \brief moves the player's piece as a parameter from its current position to a next position
+      * \brief this move method allows you to check all the conditions for moving a piece before performing the move
       * \param current position of the piece to move, new position after move, the player that move the piece
       */
     inline void move( Position  currentPosition , Position  nextPosition , Player & player,Player  & opponent);
@@ -55,16 +55,60 @@ public:
       */
     inline Player getWinner();
 
+    /**
+     * @brief inWater, this method simply check if at one position there is water
+     * @param destination,the position to check
+     * @return  true if the position in in the water , false if not
+     */
     inline bool inWater(Position destination);
 
+    /**
+     * @brief isGoodMove,this method checks if normal movement (not scout movement) is valid.
+     * @param currentPosition,the position of the piece that the player is moving
+     * @param nextPosition,the position where the player wants to go
+     * @return , true if is a good movement , false if not
+     */
     inline bool isGoodMove(Position currentPosition,Position nextPosition);
 
+    /**
+     * @brief nextCaseMove,  moves the player's piece as a parameter from its current position to a next position
+     * after all the conditions have been verified
+     * @param currentPosition,the position of the piece that the player is moving
+     * @param nextPosition,the position where the player wants to go
+     * @param player,the moving player
+     * @param opponent,the opponent
+     */
     inline void nextCaseMove( Position  currentPosition , Position  nextPosition , Player & player,Player  & opponent);
-    inline bool canMinerMove(Position  currentPosition , Position  nextPosition , Player & player,Player  & opponent);
+
+    /**
+     * @brief canMinerMove,this method verifies all the conditions of movement of the scout piece (2)
+     * @param currentPosition,the position of the piece that the player is moving
+     * @param nextPosition,the position where the player wants to go
+     * @param player,the moving player
+     * @param opponent,the opponent
+     * @return , true if the scout piece can move , false if not
+     */
+    inline bool canScoutMove(Position  currentPosition , Position  nextPosition , Player & player,Player  & opponent);
+
+    /**
+     * @brief getPlayerOne, returns the reference to the first player
+     * @return the first player
+     */
     inline Player & getPlayerOne();
+
+    /**
+     * @brief getPlayerTwo,returns the reference to the second player
+     * @return
+     */
     inline Player & getPlayerTwo();
-    inline void fillBoard();
-    inline string ** getBoard();
+
+    /**
+     * @brief canStillMove,this method checks if a player is no longer able to move.
+     * @param player,the player to check
+     * @return true if the player can still move , false if not
+     */
+    inline bool canStillMove(Player player);
+
 
 };
 Game::Game(Player  player1,Player  player2):
@@ -76,19 +120,20 @@ Game::Game(Player  player1,Player  player2):
 void Game::move( Position  currentPosition,  Position  nextPosition, Player  & player,Player  & opponent){
 
     if(!player.isMyPiece(currentPosition)){
-        throw std::invalid_argument("vous n'avez pas de piece à cette position");
+        cout<<"vous n'avez pas de piece à cette position"<<endl;
     }else if(player.getPieceAt(currentPosition).to_string()=="D" || player.getPieceAt(currentPosition).to_string()=="B"){
-        throw std::invalid_argument("attention! vous ne pouvez pas déplacer cette pièce");
+
+        cout<<"attention! vous ne pouvez pas déplacer cette pièce"<<endl;
     }else if(stoi(player.getPieceAt(currentPosition).to_string())!=2 && !isGoodMove(currentPosition,nextPosition)){
-         throw std::invalid_argument("mauvais deplacement");
+        cout<<"mauvais deplacement"<<endl;
     }else if(player.isMyPiece(nextPosition)){
-         throw std::invalid_argument("vous avez déjà une piece à la destination");
+        cout<<"vous avez déjà une piece à la destination"<<endl;
     }else if(this->inWater(nextPosition)){
-        throw std::invalid_argument("attention! vous allez dans l'eau");
+        cout<<"attention! vous allez dans l'eau"<<endl;
     }else if(player.getPieceAt(currentPosition).to_string()=="2"){
 
-            if(!this->canMinerMove(currentPosition,nextPosition,player,opponent)){
-               throw std::invalid_argument("mauvais deplacement du demineur");
+            if(!this->canScoutMove(currentPosition,nextPosition,player,opponent)){
+                cout<<"mauvais deplacement du demineur"<<endl;
             }else{
                 this->nextCaseMove(currentPosition,nextPosition,player,opponent);
             }
@@ -119,10 +164,11 @@ bool Game::gameIsOver(){
             return true;
         }
     }
-
-    if(playerOne.getPieces().size()==7 ||playerTwo.getPieces().size()==7){
+    if(!canStillMove(playerOne)||!canStillMove(playerTwo)){
         return true;
     }
+
+
 
     return false;
 }
@@ -133,10 +179,15 @@ Player Game::getWinner(){
             return playerTwo;
         }
     }
-
-    if(playerOne.getPieces().size()==7 ){
+    if(!canStillMove(playerOne)){
         return playerTwo;
     }
+
+    if(playerOne.getPieces().size()<playerTwo.getPieces().size() ){
+        return playerTwo;
+    }
+
+
     return playerOne;
 }
 inline bool Game::isGoodMove(Position currentPosition,Position nextPosition){
@@ -150,7 +201,7 @@ inline bool Game::isGoodMove(Position currentPosition,Position nextPosition){
     return true;
 }
 
-bool Game::canMinerMove(Position  currentPosition , Position  nextPosition , Player & player,Player  & opponent){
+bool Game::canScoutMove(Position  currentPosition , Position  nextPosition , Player & player,Player  & opponent){
 
     if(currentPosition.getX()<=nextPosition.getX()){
        for(int i=currentPosition.getX()+1;i<nextPosition.getX();i++){
@@ -196,35 +247,9 @@ void Game::nextCaseMove( Position  currentPosition , Position  nextPosition , Pl
 
     if(opponent.getPieceAt(nextPosition).to_string()=="D"){
         opponent.getPieceAt(nextPosition).setRevealed();
-    }else if(opponent.getPieceAt(nextPosition).to_string()=="B"){
+    }
+        else if(stoi(player.getPieceAt(currentPosition).to_string())==3 && opponent.getPieceAt(nextPosition).to_string()=="B"){
 
-        player.addLostPiece(player.getPieceAt(currentPosition));
-        player.removePiece(currentPosition);
-        opponent.getPieceAt(nextPosition).setRevealed();
-        player.setMyTurn(false);
-        opponent.setMyTurn(true);
-
-    }else if(stoi(player.getPieceAt(currentPosition).to_string())==stoi(opponent.getPieceAt(nextPosition).to_string())){
-        player.addLostPiece(player.getPieceAt(currentPosition));
-        player.removePiece(currentPosition);
-        opponent.addLostPiece(opponent.getPieceAt(nextPosition));
-        opponent.removePiece(nextPosition);
-        player.setMyTurn(false);
-        opponent.setMyTurn(true);
-    }else if(stoi(player.getPieceAt(currentPosition).to_string())>stoi(opponent.getPieceAt(nextPosition).to_string())){
-        player.getPieceAt(currentPosition).setRevealed();
-        opponent.addLostPiece(opponent.getPieceAt(nextPosition));
-        opponent.removePiece(nextPosition);
-        player.getPieceAt(currentPosition).move(nextPosition);
-        player.setMyTurn(false);
-        opponent.setMyTurn(true);
-    }else if(stoi(player.getPieceAt(currentPosition).to_string())<stoi(opponent.getPieceAt(nextPosition).to_string())){
-        opponent.getPieceAt(nextPosition).setRevealed();
-        player.addLostPiece(player.getPieceAt(currentPosition));
-        player.removePiece(currentPosition);
-        player.setMyTurn(false);
-        opponent.setMyTurn(true);
-    }else if(stoi(player.getPieceAt(currentPosition).to_string())==1 && stoi(opponent.getPieceAt(nextPosition).to_string())==10){
         player.getPieceAt(currentPosition).setRevealed();
         opponent.addLostPiece(opponent.getPieceAt(nextPosition));
         opponent.removePiece(nextPosition);
@@ -232,16 +257,62 @@ void Game::nextCaseMove( Position  currentPosition , Position  nextPosition , Pl
         player.setMyTurn(false);
         opponent.setMyTurn(true);
     }
-  }else if(player.getPieceAt(currentPosition).roundTripCheck(nextPosition)){
+        else if(opponent.getPieceAt(nextPosition).to_string()=="B"){
 
-      throw std::invalid_argument("attention! vous essayez de faire plus de 3 aller retour");
+        player.addLostPiece(player.getPieceAt(currentPosition));
+        player.removePiece(currentPosition);
+        opponent.getPieceAt(nextPosition).setRevealed();
+        player.setMyTurn(false);
+        opponent.setMyTurn(true);
+
+    }
+        else if(stoi(player.getPieceAt(currentPosition).to_string())==stoi(opponent.getPieceAt(nextPosition).to_string())){
+
+        player.addLostPiece(player.getPieceAt(currentPosition));
+        player.removePiece(currentPosition);
+        opponent.addLostPiece(opponent.getPieceAt(nextPosition));
+        opponent.removePiece(nextPosition);
+        player.setMyTurn(false);
+        opponent.setMyTurn(true);
+    }
+        else if(stoi(player.getPieceAt(currentPosition).to_string())>stoi(opponent.getPieceAt(nextPosition).to_string())){
+
+        player.getPieceAt(currentPosition).setRevealed();
+        opponent.addLostPiece(opponent.getPieceAt(nextPosition));
+        opponent.removePiece(nextPosition);
+        player.getPieceAt(currentPosition).move(nextPosition);
+        player.setMyTurn(false);
+        opponent.setMyTurn(true);
+    }
+        else if(stoi(player.getPieceAt(currentPosition).to_string())<stoi(opponent.getPieceAt(nextPosition).to_string())){
+
+        opponent.getPieceAt(nextPosition).setRevealed();
+        player.addLostPiece(player.getPieceAt(currentPosition));
+        player.removePiece(currentPosition);
+        player.setMyTurn(false);
+        opponent.setMyTurn(true);
+    }
+        else if(stoi(player.getPieceAt(currentPosition).to_string())==1 && stoi(opponent.getPieceAt(nextPosition).to_string())==10){
+
+        player.getPieceAt(currentPosition).setRevealed();
+        opponent.addLostPiece(opponent.getPieceAt(nextPosition));
+        opponent.removePiece(nextPosition);
+        player.getPieceAt(currentPosition).move(nextPosition);
+        player.setMyTurn(false);
+        opponent.setMyTurn(true);
+    }
+  }
+
+  else if(player.getPieceAt(currentPosition).roundTripCheck(nextPosition)){
+        cout<<"attention! vous essayez de faire plus de 3 aller retour"<<endl;
+
 
     }else{
 
       player.emptyLastOccupation(player.getPieceAt(currentPosition));
       player.getPieceAt(currentPosition).move(nextPosition);
-     // player.setMyTurn(false);
-      //opponent.setMyTurn(true);
+      player.setMyTurn(false);
+      opponent.setMyTurn(true);
 
   }
 }
@@ -251,6 +322,14 @@ Player & Game::getPlayerOne(){
 }
 Player & Game::getPlayerTwo(){
     return this->playerTwo;
+}
+bool Game::canStillMove(Player player){
+    for(unsigned u=0;u<player.getPieces().size();u++){
+        if(player.getPieces().at(u).to_string()!="D" && playerOne.getPieces().at(u).to_string()!="B"){
+            return true;
+        }
+    }
+    return false;
 }
 
 
