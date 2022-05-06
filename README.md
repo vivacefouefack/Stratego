@@ -1,13 +1,14 @@
 Ceci mentionne les informations supplementaires pour l'excution de notre programme.
-groupe 4
-membres
+Groupe 4
+Membres:
 Fouefack vivace -54490
 Ngoumeni Austin - 55015
 
 
 -Execution :
-
- le main qui s'occupe de lancer le programme se trouve dans le sous-projet controller , dans la classe main.cpp
+-pour executer le l'interface graphique ,il suffira de faire un clique droit sur le sous-projet "stratego_gui" et cliquer sur "run"
+ 
+ -le main qui s'occupe de lancer le programme se trouve dans le sous-projet controller , dans la classe main.cpp
  pour executer le projet , il suffira de faire un clique droit sur le projet "stratego" et cliquer sur "run". 
  
  -Fichiers executables
