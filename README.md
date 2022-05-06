@@ -1,5 +1,8 @@
-
 Ceci mentionne les informations supplementaires pour l'excution de notre programme.
+groupe 4
+membres
+Fouefack vivace -54490
+Ngoumeni Austin - 55015
 
 
 -Execution :
