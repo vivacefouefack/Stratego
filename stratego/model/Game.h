@@ -23,6 +23,8 @@ private:
     Player playerTwo;
 
 
+    string message="";
+
 
 
 public:
@@ -116,6 +118,9 @@ public:
      */
     inline bool surrounded(Player player, Piece piece);
 
+    inline string getMessage();
+
+    inline void setMessage(string s);
 };
 Game::Game(Player  player1,Player  player2):
     playerOne{player1},
@@ -127,27 +132,37 @@ void Game::move( Position  currentPosition,  Position  nextPosition, Player  & p
 
     if(!player.isMyPiece(currentPosition)){
         cout<<"vous n'avez pas de piece à cette position"<<endl;
+        this->message="vous n'avez pas de piece à cette position";
     }else if(player.getPieceAt(currentPosition).to_string()=="D" || player.getPieceAt(currentPosition).to_string()=="B"){
 
         cout<<"attention! vous ne pouvez pas déplacer cette pièce"<<endl;
+        this->message="attention! vous ne pouvez pas déplacer cette pièce";
     }else if(stoi(player.getPieceAt(currentPosition).to_string())!=2 && !isGoodMove(currentPosition,nextPosition)){
         cout<<"mauvais deplacement"<<endl;
+        this->message="mauvais deplacement";
     }else if(player.isMyPiece(nextPosition)){
         cout<<"vous avez déjà une piece à la destination"<<endl;
+        this->message="vous avez déjà une piece à la destination";
     }else if(this->inWater(nextPosition)){
         cout<<"attention! vous allez dans l'eau"<<endl;
+         this->message="attention! vous allez dans l'eau";
     }else if(player.getPieceAt(currentPosition).to_string()=="2"){
 
             if(!this->canScoutMove(currentPosition,nextPosition,player,opponent)){
-                cout<<"mauvais deplacement du demineur"<<endl;
+                cout<<"mauvais deplacement de l'eclaireur"<<endl;
+                this->message="mauvais deplacement de l'eclaireur";
             }else{
                 this->nextCaseMove(currentPosition,nextPosition,player,opponent);
+
             }
 
     }else {
 
         nextCaseMove(currentPosition, nextPosition,player,opponent);
+
     }
+
+
 }
 bool Game::inWater(Position destination){
     if((destination.getX()==4 && destination.getY()==2) ||(destination.getX()==4 && destination.getY()==3)
@@ -209,6 +224,9 @@ inline bool Game::isGoodMove(Position currentPosition,Position nextPosition){
 
 bool Game::canScoutMove(Position  currentPosition , Position  nextPosition , Player & player,Player  & opponent){
 
+    if(nextPosition.getY()!=currentPosition.getY() && nextPosition.getX()!=currentPosition.getX()){
+            return false;
+    }
     if(currentPosition.getX()<=nextPosition.getX()){
        for(int i=currentPosition.getX()+1;i<nextPosition.getX();i++){
            if(player.isMyPiece(Position(i,currentPosition.getY())) || opponent.isMyPiece(Position(i,currentPosition.getY())) ){
@@ -311,6 +329,7 @@ void Game::nextCaseMove( Position  currentPosition , Position  nextPosition , Pl
 
   else if(player.getPieceAt(currentPosition).roundTripCheck(nextPosition)){
         cout<<"attention! vous essayez de faire plus de 3 aller retour"<<endl;
+        this->message="attention! vous essayez de faire plus de 3 aller retour";
 
 
     }else{
@@ -373,6 +392,12 @@ bool Game::surrounded(Player player,Piece piece){
     return true;
 }
 
+string Game::getMessage(){
+    return this->message;
+}
+void Game::setMessage(string s){
+    this->message=s;
+}
 
 
 }

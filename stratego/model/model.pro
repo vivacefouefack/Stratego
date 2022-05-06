@@ -9,6 +9,7 @@ SOURCES += \
 
 HEADERS += \
     Game.h \
+    IObserver.h \
     Piece.h \
     Player.h \
     Position.h

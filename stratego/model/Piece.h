@@ -117,10 +117,10 @@ void Piece::move(Position nextPosition){
     this->position_.setY(nextPosition.getY());
     this->addLastOccupation(nextPosition);
 }
-string Piece::to_string(){
+inline string Piece::to_string(){
     return this->symbole_;
 }
-string Piece::to_stringHidden(){
+inline string Piece::to_stringHidden(){
     return "?";
 }
 bool Piece::getRevealed(){
